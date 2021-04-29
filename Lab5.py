@@ -56,6 +56,9 @@ def Lab5class(var, DTR, LTR, DTE, LTE, nclass):
         for i in range(nclass):
             mu = media(DTR[:, LTR == i])
             S[i] = Lab4.logpdf_GAU_ND2(DTE, mu, sigma)
+    # tutta la aprte di SJoint e SPost serve a calcolare le probabilità per classe
+    # per trovare il final label basta S, ovvero le loglikelihoods
+
     # usando i dati in log ci sono problemi numerici di segno (alcune percentuali sono negative)
     # usando un esponenziale normale ci sono problemi nel calcolarlo
     #si può usare un trick "log-sum-exp"
