@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from time import perf_counter
 def getConfusionMatrix(predictions, labels, nclass):
     conf = np.zeros((nclass, nclass), dtype=int)
@@ -29,6 +30,20 @@ def minDetectionCost(llrs, lab):
             min_dcf = r
     return min_dcf
 
+def plotROC(llrs, lab): #riceve le loglikelihoods, calcola per ogni threshold e plotta TPR over FPR
+    TPR = []
+    FPR = []
+    index = 0
+    for i in np.arange(min(llrs), max(llrs), 0.1):
+        pred = np.where(llrs > i, 1, 0)
+        conf = getConfusionMatrix(pred, lab, 2)
+        TPR.insert(index,conf[1, 1] / (conf[0, 1] + conf[1, 1]))
+        FPR.insert(index, conf[1, 0] / (conf[0, 0] + conf[1, 0]))
+        index += 1
+    plt.grid()
+    plt.plot(np.array(FPR), np.array(TPR))
+    plt.show()
+    return
 
 
 
@@ -46,4 +61,5 @@ if __name__ == "__main__":
     print('Risk: ', bayesRisk(getConfusionMatrix(bayes_predictions, commedia_infpar_labels, 2)))
     print('Risk normalized: ', normalizedBayesRisk(getConfusionMatrix(bayes_predictions, commedia_infpar_labels, 2)))
     print(minDetectionCost(commedia_infpar_llr, commedia_infpar_labels))
+    plotROC(commedia_infpar_llr, commedia_infpar_labels)
 
